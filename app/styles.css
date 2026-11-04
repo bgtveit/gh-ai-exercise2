@@ -1,0 +1,679 @@
+/* ==========================================================================
+   Project Pulse — dashboard stylesheet
+   Styles exactly the Contract B hooks in docs/project-pulse-plan.md.
+   No web fonts, no external resources.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Design tokens
+   -------------------------------------------------------------------------- */
+:root {
+  color-scheme: light dark;
+
+  /* Typography */
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, "Noto Sans", sans-serif;
+  --text-xs: 0.75rem;   /* 12px — field labels */
+  --text-sm: 0.875rem;  /* 14px — badges, meta */
+  --text-base: 1rem;    /* 16px — body */
+  --text-lg: 1.1875rem; /* 19px — h2 project name */
+  --text-xl: 1.75rem;   /* 28px — summary counts */
+  --text-2xl: clamp(1.75rem, 1.2rem + 2.4vw, 2.5rem); /* h1 */
+  --line-height: 1.5;
+  --line-height-tight: 1.25;
+
+  /* Spacing scale */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+
+  /* Shape */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-pill: 999px;
+
+  /* Surfaces & text (light) */
+  --color-bg: #f3f5fa;
+  --color-bg-accent: #e7ecf7;
+  --color-surface: #ffffff;
+  --color-border: #dde2ec;
+  --color-text: #172033;          /* ~16:1 on white */
+  --color-text-muted: #4a5568;    /* ~7.5:1 on white */
+  --color-brand: #3b4fd8;
+  --color-focus: #2f4bd6;
+
+  /* Elevation */
+  --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.06), 0 1px 3px rgba(16, 24, 40, 0.08);
+  --shadow-md: 0 4px 10px -2px rgba(16, 24, 40, 0.08), 0 2px 4px -2px rgba(16, 24, 40, 0.06);
+  --shadow-lg: 0 14px 28px -8px rgba(16, 24, 40, 0.18), 0 6px 10px -6px rgba(16, 24, 40, 0.1);
+
+  /* Status palette: text/background pairs, all ≥ 4.5:1 */
+  --status-on-track-fg: #166534;  --status-on-track-bg: #dcfce7;  --status-on-track-accent: #16a34a;
+  --status-at-risk-fg: #8a3c0b;   --status-at-risk-bg: #fef3c7;   --status-at-risk-accent: #d97706;
+  --status-blocked-fg: #991b1b;   --status-blocked-bg: #fee2e2;   --status-blocked-accent: #dc2626;
+  --status-done-fg: #1e40af;      --status-done-bg: #dbeafe;      --status-done-accent: #2563eb;
+  --status-unknown-fg: #374151;   --status-unknown-bg: #e5e7eb;   --status-unknown-accent: #6b7280;
+
+  /* Priority palette */
+  --priority-high-fg: #ffffff;    --priority-high-bg: #b91c1c;    --priority-high-accent: #b91c1c;
+  --priority-medium-fg: #9a3412;  --priority-medium-bg: #ffedd5;  --priority-medium-accent: #ea580c;
+  --priority-low-fg: #075985;     --priority-low-bg: #e0f2fe;     --priority-low-accent: #0284c7;
+  --priority-unknown-fg: #374151; --priority-unknown-bg: #e5e7eb; --priority-unknown-accent: #9ca3af;
+
+  /* Messages */
+  --message-info-fg: #1e3a8a;  --message-info-bg: #eef2ff;  --message-info-border: #a5b4fc;
+  --message-error-fg: #7f1d1d; --message-error-bg: #fef2f2; --message-error-border: #dc2626;
+  --message-empty-fg: #374151; --message-empty-bg: #f9fafb; --message-empty-border: #9ca3af;
+
+  /* Motion */
+  --transition-fast: 150ms ease-out;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #0f1420;
+    --color-bg-accent: #151c2c;
+    --color-surface: #1a2232;
+    --color-border: #2c3648;
+    --color-text: #e8ecf4;        /* ~14:1 on surface */
+    --color-text-muted: #aab4c5;  /* ~8:1 on surface */
+    --color-brand: #8ea2ff;
+    --color-focus: #9fb1ff;
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 12px -2px rgba(0, 0, 0, 0.5);
+    --shadow-lg: 0 16px 32px -8px rgba(0, 0, 0, 0.65);
+
+    --status-on-track-fg: #bbf7d0;  --status-on-track-bg: #14532d;  --status-on-track-accent: #22c55e;
+    --status-at-risk-fg: #fde68a;   --status-at-risk-bg: #713f12;   --status-at-risk-accent: #f59e0b;
+    --status-blocked-fg: #fecaca;   --status-blocked-bg: #7f1d1d;   --status-blocked-accent: #ef4444;
+    --status-done-fg: #bfdbfe;      --status-done-bg: #1e3a8a;      --status-done-accent: #3b82f6;
+    --status-unknown-fg: #e5e7eb;   --status-unknown-bg: #374151;   --status-unknown-accent: #9ca3af;
+
+    --priority-high-fg: #450a0a;    --priority-high-bg: #fca5a5;    --priority-high-accent: #f87171;
+    --priority-medium-fg: #fed7aa;  --priority-medium-bg: #7c2d12;  --priority-medium-accent: #fb923c;
+    --priority-low-fg: #bae6fd;     --priority-low-bg: #0c4a6e;     --priority-low-accent: #38bdf8;
+    --priority-unknown-fg: #e5e7eb; --priority-unknown-bg: #374151; --priority-unknown-accent: #6b7280;
+
+    --message-info-fg: #c7d2fe;  --message-info-bg: #1e2540;  --message-info-border: #6366f1;
+    --message-error-fg: #fecaca; --message-error-bg: #3a1414; --message-error-border: #ef4444;
+    --message-empty-fg: #d1d5db; --message-empty-bg: #1a2232; --message-empty-border: #6b7280;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   2. Base
+   -------------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--line-height);
+  color: var(--color-text);
+  background:
+    radial-gradient(1200px 400px at 10% -10%, var(--color-bg-accent), transparent 70%),
+    var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+/* --------------------------------------------------------------------------
+   3. Dashboard shell
+   -------------------------------------------------------------------------- */
+.dashboard {
+  width: 100%;
+  max-width: 78rem;
+  margin: 0 auto;
+  padding: var(--space-7) var(--space-6) var(--space-6);
+}
+
+.dashboard-header {
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-5);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.dashboard-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin: 0;
+  font-size: var(--text-2xl);
+  font-weight: 800;
+  line-height: var(--line-height-tight);
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+}
+
+/* Decorative "pulse" dot beside the title — no text content, so nothing extra is announced. */
+.dashboard-title::before {
+  content: "";
+  flex: none;
+  width: 0.6em;
+  height: 0.6em;
+  border-radius: var(--radius-pill);
+  background: var(--color-brand);
+  box-shadow: 0 0 0 0.18em color-mix(in srgb, var(--color-brand) 25%, transparent);
+}
+
+.dashboard-subtitle {
+  margin: var(--space-2) 0 0;
+  max-width: 60ch;
+  font-size: var(--text-base);
+  color: var(--color-text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   4. Status summary strip
+   -------------------------------------------------------------------------- */
+.dashboard-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(9.5rem, 100%), 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.summary-item {
+  --summary-accent: var(--status-unknown-accent);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-4) var(--space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-left: 5px solid var(--summary-accent);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.summary-item--on-track { --summary-accent: var(--status-on-track-accent); }
+.summary-item--at-risk  { --summary-accent: var(--status-at-risk-accent); }
+.summary-item--blocked  { --summary-accent: var(--status-blocked-accent); }
+.summary-item--done     { --summary-accent: var(--status-done-accent); }
+/* "Other" bucket for unrecognised statuses: neutral gray + dashed edge (not color-only). */
+.summary-item--unknown  {
+  --summary-accent: var(--status-unknown-accent);
+  border-left-style: dashed;
+}
+
+.summary-count {
+  font-size: var(--text-xl);
+  font-weight: 800;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text);
+}
+
+.summary-label {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   5. Messages (loading / error / empty)
+   -------------------------------------------------------------------------- */
+/* Block layout (not flex): the error message mixes text nodes and <strong>,
+   which flex would split into separate items. Marker is absolutely positioned. */
+.dashboard-message {
+  position: relative;
+  display: block;
+  margin: 0 0 var(--space-6);
+  padding: var(--space-4) var(--space-5) var(--space-4) calc(var(--space-5) + 1.25rem);
+  font-size: var(--text-base);
+  line-height: var(--line-height);
+  color: var(--message-info-fg);
+  background: var(--message-info-bg);
+  border: 1px solid var(--message-info-border);
+  border-left-width: 5px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  overflow-wrap: anywhere;
+}
+
+/* Decorative state marker (empty string content — not announced). */
+.dashboard-message::before {
+  content: "";
+  position: absolute;
+  left: var(--space-5);
+  top: calc(var(--space-4) + 0.375em);
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: var(--radius-pill);
+  background: currentColor;
+  opacity: 0.8;
+}
+
+.dashboard-message strong {
+  font-weight: 700;
+}
+
+.dashboard-message--error {
+  color: var(--message-error-fg);
+  background: var(--message-error-bg);
+  border-color: var(--message-error-border);
+  border-left-width: 6px;
+  font-weight: 500;
+}
+
+.dashboard-message--error::before {
+  border-radius: 2px;
+  transform: rotate(45deg);
+  opacity: 1;
+}
+
+.dashboard-message--empty {
+  padding: var(--space-7) var(--space-5);
+  text-align: center;
+  color: var(--message-empty-fg);
+  background: var(--message-empty-bg);
+  border: 2px dashed var(--message-empty-border);
+  box-shadow: none;
+}
+
+.dashboard-message--empty::before {
+  display: none;
+}
+
+/* --------------------------------------------------------------------------
+   6. Project grid
+   -------------------------------------------------------------------------- */
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+  /* min() guard keeps a single column inside very narrow viewports (320px). */
+  grid-template-columns: repeat(auto-fill, minmax(min(18rem, 100%), 1fr));
+  gap: var(--space-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.project-grid-item {
+  display: flex;
+  min-width: 0;
+}
+
+/* --------------------------------------------------------------------------
+   7. Project card
+   -------------------------------------------------------------------------- */
+.project-card {
+  --card-accent: var(--priority-unknown-accent);
+  --card-accent-size: 4px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: 100%;
+  min-width: 0;
+  padding: calc(var(--space-5) + var(--card-accent-size)) var(--space-5) var(--space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+/* Priority accent bar along the top edge. */
+.project-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: var(--card-accent-size);
+  background: var(--card-accent);
+}
+
+.project-card:hover,
+.project-card:focus-within {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+  border-color: color-mix(in srgb, var(--card-accent) 45%, var(--color-border));
+}
+
+.project-card:focus-within {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.project-card--priority-high {
+  --card-accent: var(--priority-high-accent);
+  --card-accent-size: 8px;
+  /* Beyond color: thicker bar + a full-perimeter border + stronger shadow. */
+  border: 2px solid var(--priority-high-accent);
+  box-shadow: var(--shadow-lg);
+}
+
+.project-card--priority-medium {
+  --card-accent: var(--priority-medium-accent);
+  --card-accent-size: 5px;
+}
+
+.project-card--priority-low {
+  --card-accent: var(--priority-low-accent);
+  --card-accent-size: 3px;
+}
+
+.project-card--priority-unknown {
+  --card-accent: var(--priority-unknown-accent);
+  --card-accent-size: 3px;
+  /* Striped bar distinguishes "unknown" from "low" without color. */
+}
+
+.project-card--priority-unknown::before {
+  background: repeating-linear-gradient(
+    90deg,
+    var(--card-accent) 0 10px,
+    transparent 10px 16px
+  );
+}
+
+.project-card-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-3);
+}
+
+.project-name {
+  flex: 1 1 10rem;
+  min-width: 0;
+  margin: 0;
+  font-size: var(--text-lg);
+  font-weight: 700;
+  line-height: var(--line-height-tight);
+  color: var(--color-text);
+  overflow-wrap: anywhere;
+}
+
+.project-card--priority-high .project-name {
+  font-weight: 800;
+}
+
+.field-label {
+  display: block;
+  margin-bottom: 0.125rem;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.project-owner {
+  margin: 0;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text);
+  overflow-wrap: anywhere;
+}
+
+.project-summary {
+  margin: 0;
+  font-size: var(--text-base);
+  color: var(--color-text-muted);
+  overflow-wrap: anywhere;
+}
+
+.project-activity {
+  padding: var(--space-3) var(--space-4);
+  background: color-mix(in srgb, var(--color-bg) 70%, var(--color-surface));
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow-wrap: anywhere;
+}
+
+.project-activity p {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text);
+  overflow-wrap: anywhere;
+}
+
+.project-priority {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin: auto 0 0; /* pin to card bottom so rows line up */
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-border);
+}
+
+.project-priority .field-label {
+  margin: 0;
+}
+
+/* --------------------------------------------------------------------------
+   8. Badges
+   -------------------------------------------------------------------------- */
+.status-badge,
+.priority-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  max-width: 100%;
+  padding: 0.25rem 0.7rem;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  line-height: 1.25;
+  white-space: nowrap;
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+}
+
+/* Status badge: dot + label. Dot is decorative; label carries meaning. */
+.status-badge {
+  --badge-fg: var(--status-unknown-fg);
+  --badge-bg: var(--status-unknown-bg);
+  flex: none;
+  color: var(--badge-fg);
+  background: var(--badge-bg);
+  border-color: color-mix(in srgb, var(--badge-fg) 20%, transparent);
+}
+
+.status-badge::before {
+  content: "";
+  flex: none;
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: var(--radius-pill);
+  background: currentColor;
+}
+
+.status-badge--on-track { --badge-fg: var(--status-on-track-fg); --badge-bg: var(--status-on-track-bg); }
+.status-badge--at-risk  { --badge-fg: var(--status-at-risk-fg);  --badge-bg: var(--status-at-risk-bg); }
+.status-badge--blocked  { --badge-fg: var(--status-blocked-fg);  --badge-bg: var(--status-blocked-bg); }
+.status-badge--done     { --badge-fg: var(--status-done-fg);     --badge-bg: var(--status-done-bg); }
+.status-badge--unknown  {
+  --badge-fg: var(--status-unknown-fg);
+  --badge-bg: var(--status-unknown-bg);
+  border-style: dashed;
+  /* Raw unknown values may be long; allow wrapping. */
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* Blocked gets a square marker so it differs in shape, not just hue. */
+.status-badge--blocked::before { border-radius: 1px; }
+/* Done gets a hollow ring marker. */
+.status-badge--done::before {
+  background: transparent;
+  box-shadow: inset 0 0 0 2px currentColor;
+}
+
+.priority-badge {
+  --badge-fg: var(--priority-unknown-fg);
+  --badge-bg: var(--priority-unknown-bg);
+  color: var(--badge-fg);
+  background: var(--badge-bg);
+  border-color: color-mix(in srgb, var(--badge-fg) 20%, transparent);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: var(--text-xs);
+  padding: 0.3rem 0.75rem;
+}
+
+/* High: solid filled pill (others are tinted) — stands out by weight and fill. */
+.priority-badge--high {
+  --badge-fg: var(--priority-high-fg);
+  --badge-bg: var(--priority-high-bg);
+  font-weight: 800;
+  border-color: var(--priority-high-bg);
+  box-shadow: 0 2px 6px -1px color-mix(in srgb, var(--priority-high-bg) 50%, transparent);
+}
+
+.priority-badge--medium { --badge-fg: var(--priority-medium-fg); --badge-bg: var(--priority-medium-bg); }
+.priority-badge--low    { --badge-fg: var(--priority-low-fg);    --badge-bg: var(--priority-low-bg); font-weight: 600; }
+.priority-badge--unknown {
+  --badge-fg: var(--priority-unknown-fg);
+  --badge-bg: var(--priority-unknown-bg);
+  border-style: dashed;
+  text-transform: none;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* --------------------------------------------------------------------------
+   9. Footer
+   -------------------------------------------------------------------------- */
+.dashboard-footer {
+  margin-top: var(--space-7);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.dashboard-footer p {
+  margin: 0;
+}
+
+/* "Not provided" placeholder: italic + muted (≥4.5:1 in light and dark). */
+.field-missing {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--color-text-muted);
+}
+
+/* Inside badges keep the badge's own text color so contrast stays valid. */
+.status-badge .field-missing,
+.priority-badge .field-missing {
+  color: inherit;
+  font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   10. Responsive
+   -------------------------------------------------------------------------- */
+@media (max-width: 900px) {
+  .dashboard {
+    padding: var(--space-6) var(--space-5) var(--space-5);
+  }
+}
+
+@media (max-width: 600px) {
+  .dashboard {
+    padding: var(--space-5) var(--space-4) var(--space-4);
+  }
+
+  .dashboard-header {
+    margin-bottom: var(--space-5);
+    padding-bottom: var(--space-4);
+  }
+
+  .dashboard-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-5);
+  }
+
+  .summary-item {
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .project-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+  }
+
+  .project-card {
+    padding: calc(var(--space-4) + var(--card-accent-size)) var(--space-4) var(--space-4);
+  }
+
+  .dashboard-message--empty {
+    padding: var(--space-6) var(--space-4);
+  }
+}
+
+@media (max-width: 360px) {
+  .dashboard {
+    padding-inline: var(--space-3);
+  }
+
+  .summary-count {
+    font-size: 1.5rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   11. User preferences
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+
+  .project-card:hover,
+  .project-card:focus-within {
+    transform: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .status-badge,
+  .priority-badge,
+  .summary-item,
+  .dashboard-message,
+  .project-card {
+    border: 1px solid CanvasText;
+  }
+
+  .project-card--priority-high {
+    border-width: 3px;
+  }
+}

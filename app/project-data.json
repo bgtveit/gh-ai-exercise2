@@ -1,0 +1,51 @@
+{
+  "projects": [
+    {
+      "name": "Checkout Service Migration",
+      "owner": "@priya-ops",
+      "status": "blocked",
+      "recentActivity": "Cutover paused while the payments team confirms the new API rate limits.",
+      "priority": "high",
+      "summary": "Moves checkout from the legacy monolith to its own service. Help is welcome on load-test scripts."
+    },
+    {
+      "name": "Contributor Onboarding Guide and Accessibility-First Documentation Refresh for New Team Members",
+      "owner": "Mona Lisa Octocat (@mona) with the Developer Experience working group",
+      "status": "at-risk",
+      "recentActivity": "Draft chapters for local setup, code review etiquette, and the accessibility checklist are in review, but screenshots still need alt text and the Codespaces section depends on an unreleased devcontainer update tracked at https://github.com/example/devcontainer-features/issues/1234567890.",
+      "priority": "high",
+      "summary": "A friendly, step-by-step guide that takes new contributors from their first clone to their first merged pull request. Great first issue for anyone who enjoys writing or reviewing docs."
+    },
+    {
+      "name": "Search Relevance Tuning",
+      "owner": "@devon-lee",
+      "status": "on-track",
+      "recentActivity": "Shipped the synonym dictionary to staging and started an A/B test.",
+      "priority": "medium",
+      "summary": "Improves how results are ranked for common queries. Feedback on odd search results is very useful."
+    },
+    {
+      "name": "Mobile Dark Mode",
+      "owner": "@sam-rivera",
+      "status": "on-track",
+      "recentActivity": "Finished color token audit for the settings and profile screens.",
+      "priority": "low"
+    },
+    {
+      "name": "CI Pipeline Speedup",
+      "owner": "@alex-kim",
+      "status": "done",
+      "recentActivity": "Parallelized test shards, cutting median build time from 18 to 7 minutes.",
+      "priority": "medium",
+      "summary": "Faster feedback on every pull request. The new caching setup is documented in the CI README."
+    },
+    {
+      "name": "Analytics Event Cleanup",
+      "owner": "@jordan-patel",
+      "status": "at-risk",
+      "recentActivity": "Found 40 duplicate events that need owners before they can be removed.",
+      "priority": "low",
+      "summary": "Retires unused tracking events to keep dashboards accurate and the data pipeline lean."
+    }
+  ]
+}
